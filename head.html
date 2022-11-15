@@ -1,46 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <script src="/scripts/lib-franklin.js" type="module"></script>
 <script src="/scripts/scripts.js" type="module"></script>
-
-<script>
-  partytown = {
-    lib: '/scripts/',
-    forward: [
-      '__alloyMonitors',
-      '__alloyNS',
-      'alloy',
-      'alloy_all',
-      'alloy_click',
-      'alloy_last_event',
-      'alloy_load',
-      'alloy_unload',
-      'adobe',
-    ]
-  };
-</script>
-<script src="/scripts/partytown.js"></script>
-
-<script type="text/partytown">
-  !function(n,o){o.forEach(function(o){n[o]||((n.__alloyNS=n.__alloyNS||
-    []).push(o),n[o]=function(){var u=arguments;return new Promise(
-    function(i,l){n[o].q.push([i,l,u])})},n[o].q=[])})}
-  (window,["alloy"]);
-</script>
-<script type="text/partytown" src="/scripts/alloy.min.js" async></script>
-<script type="text/partytown">
-    alloy("configure", {
-      "edgeConfigId": "2ebfe317-5fd9-407f-8f9d-d94f7013f62b",
-      "orgId":"908936ED5D35CC220A495CD4@AdobeOrg"
-    });
-    alloy("sendEvent", {
-      data: {
-        franklinWebSDKPartyTown: {
-            init: true,
-        }
-      }
-    });
-
-</script>
-
 <link rel="stylesheet" href="/styles/styles.css"/>
 <link rel="icon" href="data:,">

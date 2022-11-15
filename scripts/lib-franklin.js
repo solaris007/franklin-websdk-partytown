@@ -10,6 +10,19 @@
  * governing permissions and limitations under the License.
  */
 
+const SCRIPT_TYPE_PARTYTOWN = 'text/partytown';
+
+const createScriptElement = (src, type) => {
+  const script = document.createElement('script');
+  script.src = src;
+  if (type) {
+    script.type = type;
+  }
+  document.head.appendChild(script);
+
+  return script;
+};
+
 /**
  * log RUM if part of the sample.
  * @param {string} checkpoint identifies the checkpoint in funnel
@@ -59,9 +72,7 @@ export function sampleRUM(checkpoint, data = {}) {
         cwv: () => sampleRUM.cwv(data) || true,
         lazy: () => {
           // use classic script to avoid CORS issues
-          const script = document.createElement('script');
-          script.src = 'https://rum.hlx.page/.rum/@adobe/helix-rum-enhancer@^1/src/index.js';
-          document.head.appendChild(script);
+          createScriptElement('https://rum.hlx.page/.rum/@adobe/helix-rum-enhancer@^1/src/index.js');
           return true;
         },
       };
@@ -547,12 +558,62 @@ export function loadFooter(footer) {
 }
 
 /**
+ * Checks whether alloy or other 3rd party scripts should be offloaded via partytown.
+ * If so, initializes partytown and creates the necessary script tags for alloy/3rd party scripts.
+ *
+ * Checks for two conditions:
+ * - Is alloy enabled via window.hlx.alloy.enable = true?
+ * - Are any scripts configured to be offloaded via party-town
+ *   by adding to window.hlx.offload.scripts?
+ *
+ * If either is true, the partytown library is added to the <head>
+ * and partytown configured to offload the relevant scripts.
+ */
+export function offload() {
+  const { offload: config, alloy } = window.hlx;
+
+  const hasScripts = Array.isArray(config.scripts) && config.scripts.length > 0;
+
+  // neither alloy nor 3rd party scripts are requested to be offloaded -> exit
+  if (!alloy.enable && !hasScripts) {
+    return;
+  }
+
+  // if alloy is enabled, configure partytown with the window.* forwards
+  // required by alloy. this needs to happen before partytown initialization
+  if (alloy.enable) {
+    createScriptElement('/scripts/alloy-config-offload.js');
+  }
+
+  // general init of partytown
+  createScriptElement('/scripts/partytown-config.js');
+  createScriptElement('/scripts/partytown.js');
+
+  // if alloy is enabled, add the scripts required by alloy
+  // to the offloading
+  if (alloy.enable) {
+    createScriptElement('/scripts/alloy-init.js', SCRIPT_TYPE_PARTYTOWN);
+    createScriptElement('/scripts/alloy.min.js', SCRIPT_TYPE_PARTYTOWN);
+    createScriptElement('/scripts/alloy-config.js', SCRIPT_TYPE_PARTYTOWN);
+  }
+
+  // add any additional 3rd party scripts to be offloaded
+  if (hasScripts) {
+    config.scripts.forEach((script) => {
+      createScriptElement(script, SCRIPT_TYPE_PARTYTOWN);
+    });
+  }
+}
+
+/**
  * init block utils
  */
 
 function init() {
   window.hlx = window.hlx || {};
   window.hlx.codeBasePath = '';
+  window.hlx.alloy = window.hlx.alloy || {};
+  window.hlx.offload = window.hlx.offload || {};
 
   const scriptEl = document.querySelector('script[src$="/scripts/scripts.js"]');
   if (scriptEl) {

@@ -11,10 +11,16 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
+  offload,
 } from './lib-franklin.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
+
+window.hlx.alloy.enable = true;
+
+window.hlx.offload.scripts = [];
+window.hlx.offload.forward = [];
 
 function buildHeroBlock(main) {
   const h1 = main.querySelector('h1');
@@ -116,6 +122,7 @@ function loadDelayed() {
 }
 
 async function loadPage() {
+  offload();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
