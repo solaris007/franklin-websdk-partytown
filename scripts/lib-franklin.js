@@ -569,7 +569,7 @@ export function loadFooter(footer) {
  * If either is true, the partytown library is added to the <head>
  * and partytown configured to offload the relevant scripts.
  */
-export function offload() {
+export async function offload() {
   const { offload: config, alloy } = window.hlx;
 
   const hasScripts = Array.isArray(config.scripts) && config.scripts.length > 0;
@@ -579,15 +579,29 @@ export function offload() {
     return;
   }
 
+  window.partytown = {
+    lib: '/scripts/',
+    forward: window.hlx.offload.forward || [],
+  };
+
   // if alloy is enabled, configure partytown with the window.* forwards
   // required by alloy. this needs to happen before partytown initialization
   if (alloy.enable) {
-    createScriptElement('/scripts/alloy-config-offload.js');
+    window.hlx.offload.forward = window.hlx.offload.forward.concat([
+      '__alloyMonitors',
+      '__alloyNS',
+      'alloy',
+      'alloy_all',
+      'alloy_click',
+      'alloy_last_event',
+      'alloy_load',
+      'alloy_unload',
+      'adobe',
+    ]);
   }
 
   // general init of partytown
-  createScriptElement('/scripts/partytown-config.js');
-  createScriptElement('/scripts/partytown.js');
+  await import('./partytown.js');
 
   // if alloy is enabled, add the scripts required by alloy
   // to the offloading
