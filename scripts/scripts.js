@@ -94,6 +94,9 @@ export function addFavIcon(href) {
  * loads everything that doesn't need to be delayed.
  */
 async function loadLazy(doc) {
+  // offload alloy and 3rd party scripts to web-worker via partytown
+  offload();
+
   const main = doc.querySelector('main');
   await loadBlocks(main);
 
@@ -122,7 +125,6 @@ function loadDelayed() {
 }
 
 async function loadPage() {
-  offload();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
