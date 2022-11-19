@@ -579,11 +579,6 @@ export async function offload() {
     return;
   }
 
-  window.partytown = {
-    lib: '/scripts/',
-    forward: window.hlx.offload.forward || [],
-  };
-
   // if alloy is enabled, configure partytown with the window.* forwards
   // required by alloy. this needs to happen before partytown initialization
   if (alloy.enable) {
@@ -599,6 +594,11 @@ export async function offload() {
       'adobe',
     ]);
   }
+
+  window.partytown = {
+    lib: '/scripts/',
+    forward: window.hlx.offload.forward || [],
+  };
 
   // general init of partytown
   await import('./partytown.js');
