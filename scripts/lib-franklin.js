@@ -607,7 +607,7 @@ export async function offload() {
   // to the offloading
   if (alloy.enable) {
     createScriptElement('/scripts/alloy-init.js', SCRIPT_TYPE_PARTYTOWN);
-    createScriptElement('/scripts/alloy.js', SCRIPT_TYPE_PARTYTOWN);
+    createScriptElement('/scripts/alloy.min.js', SCRIPT_TYPE_PARTYTOWN);
     createScriptElement('/scripts/alloy-config.js', SCRIPT_TYPE_PARTYTOWN);
   }
 

@@ -7,7 +7,7 @@ alloy('configure', {
   edgeConfigId: ALLOY_EDGE_CONFIG_ID,
   edgeDomain:
     location.host.indexOf("hlx.live") !== -1
-      ? "*.hlx.live"
+      ? location.hostname
       : undefined,
   orgId: ALLOY_ORG_ID,
 });
