@@ -95,7 +95,7 @@ export function addFavIcon(href) {
  */
 async function loadLazy(doc) {
   // offload alloy and 3rd party scripts to web-worker via partytown
-  await offload();
+  offload();
 
   const main = doc.querySelector('main');
   await loadBlocks(main);

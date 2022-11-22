@@ -569,7 +569,7 @@ export function loadFooter(footer) {
  * If either is true, the partytown library is added to the <head>
  * and partytown configured to offload the relevant scripts.
  */
-export async function offload() {
+export function offload() {
   const { offload: config, alloy } = window.hlx;
 
   const hasScripts = Array.isArray(config.scripts) && config.scripts.length > 0;
@@ -601,7 +601,7 @@ export async function offload() {
   };
 
   // general init of partytown
-  await import('./partytown.js');
+  import('./partytown.js');
 
   // if alloy is enabled, add the scripts required by alloy
   // to the offloading
